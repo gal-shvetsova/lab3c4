@@ -1,0 +1,77 @@
+plugins {
+    id 'java'
+    id 'com.github.gradlecommunity.jaxb2' version '0.1.0'
+
+    id 'org.springframework.boot' version '2.4.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+sourceCompatibility = '11'
+
+bootRun {
+    main = 'org.example.Main'
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+sourceSets {
+    jaxb2 {
+        java.srcDirs = ['genearated']
+    }
+}
+
+// Jaxb2 dependencies
+dependencies {
+    jaxb2 'javax.xml.bind:jaxb-api:2.3.1'
+    jaxb2 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
+
+    jaxb2Implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    jaxb2Implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
+}
+
+dependencies {
+    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+    implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.1'
+    implementation sourceSets.jaxb2.output
+
+    // Logging
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.14.0'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.14.0'
+
+    // Apache
+    implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.20'
+    implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
+
+    //Spring
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+jaxb2 {
+    xjc {
+        'OSMClasses' {
+            basePackage = 'org.example.genearated'
+            schema = 'OSMSchema.xsd'
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
